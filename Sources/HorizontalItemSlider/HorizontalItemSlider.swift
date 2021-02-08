@@ -2,18 +2,18 @@ import SwiftUI
 
 @available(iOS 14.0, *)
 public struct HorizontalItemSlider<Content: View>: View {
-    
+
     @State private var selection: Int = 0
     public let itemCount: Int
-    
+
     public let showIndices: Bool
-    
+
     public let verticalIndicesAlignment: VerticalAlignment
     public let horizontalIndicesAlignment: HorizontalAlignment
-    
+
     public let itemContent: (_ i: Int) -> Content
-    
-    init(
+
+    public init(
         showIndices: Bool = true,
         verticalIndicesAlignment: VerticalAlignment = VerticalAlignment.bottom,
         horizontalIndicesAlignment: HorizontalAlignment = HorizontalAlignment.center,
@@ -26,11 +26,11 @@ public struct HorizontalItemSlider<Content: View>: View {
         self.itemCount = itemCount
         self.itemContent = itemContent
     }
-    
+
     public var body: some View {
-        
+
         ZStack {
-            
+
             TabView(selection: self.$selection) {
                 ForEach(0..<self.itemCount, id: \.self) {i in
                     self.itemContent(i)
@@ -40,29 +40,29 @@ public struct HorizontalItemSlider<Content: View>: View {
             .tabViewStyle(
                 PageTabViewStyle(indexDisplayMode: PageTabViewStyle.IndexDisplayMode.never)
             )
-            
+
             if self.itemCount > 1 && self.showIndices {
-                
+
                 VStack {
-                    
+
                     if self.verticalIndicesAlignment == VerticalAlignment.bottom {
                         Spacer()
                     }
-                    
-                        
+
+
                     HStack {
-                        
+
                         if self.horizontalIndicesAlignment == HorizontalAlignment.trailing {
                             Spacer()
                         }
-                        
+
                         HStack(spacing: 10) {
                             ForEach(0..<self.itemCount, id: \.self) { i in
-                                
+
                                 Circle()
                                     .frame(width: 8, height: 8)
                                     .foregroundColor((i == self.selection) ? Color.primary : Color.gray.opacity(0.3))
-                                
+
                             }
                         }
                         .padding(.horizontal, 10)
@@ -70,42 +70,44 @@ public struct HorizontalItemSlider<Content: View>: View {
                         .background(Color(UIColor.secondarySystemBackground))
                         .clipped()
                         .cornerRadius(16)
-                        
+
                         if self.horizontalIndicesAlignment == HorizontalAlignment.leading {
                             Spacer()
                         }
-                        
+
                     }
-                    
+
                     if self.verticalIndicesAlignment == VerticalAlignment.top {
                         Spacer()
                     }
-                    
+
                 }.padding(8)
-                
+
             }
-            
+
         }
-        
+
     }
-    
+
 }
 
 
 
 @available(iOS 14.0, *)
-struct HorizontalItemSlider_Previews: PreviewProvider {
+public struct HorizontalItemSlider_Previews: PreviewProvider {
     
     public static var previews: some View {
         
         NavigationView {
             
-            HorizontalItemSlider(verticalIndicesAlignment: VerticalAlignment.bottom, horizontalIndicesAlignment: HorizontalAlignment.trailing, itemCount: 4) { i in
-                Text("No. \(i)")
-                    .frame(minWidth: 0, idealWidth: 100, maxWidth: .infinity, minHeight: 0, idealHeight: 100, maxHeight: .infinity, alignment: .center)
-            }.frame(height: 256)
+            Text("ABC")
             
-        }.colorScheme(.dark)
+//            HorizontalItemSlider(verticalIndicesAlignment: VerticalAlignment.bottom, horizontalIndicesAlignment: HorizontalAlignment.trailing, itemCount: 4) { i in
+//                Text("No. \(i)")
+//                    .frame(minWidth: 0, idealWidth: 100, maxWidth: .infinity, minHeight: 0, idealHeight: 100, maxHeight: .infinity, alignment: .center)
+//            }.frame(height: 256)
+            
+        }//.colorScheme(.dark)
         
     }
     
