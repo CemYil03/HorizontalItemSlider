@@ -100,12 +100,10 @@ public struct HorizontalItemSlider_Previews: PreviewProvider {
         
         NavigationView {
             
-            Text("ABC")
-            
-//            HorizontalItemSlider(verticalIndicesAlignment: VerticalAlignment.bottom, horizontalIndicesAlignment: HorizontalAlignment.trailing, itemCount: 4) { i in
-//                Text("No. \(i)")
-//                    .frame(minWidth: 0, idealWidth: 100, maxWidth: .infinity, minHeight: 0, idealHeight: 100, maxHeight: .infinity, alignment: .center)
-//            }.frame(height: 256)
+            HorizontalItemSlider(verticalIndicesAlignment: VerticalAlignment.bottom, horizontalIndicesAlignment: HorizontalAlignment.trailing, itemCount: 4) { i in
+                Text("No. \(i)")
+                    .frame(minWidth: 0, idealWidth: 100, maxWidth: .infinity, minHeight: 0, idealHeight: 100, maxHeight: .infinity, alignment: .center)
+            }.frame(height: 256)
             
         }//.colorScheme(.dark)
         
