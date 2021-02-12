@@ -1,7 +1,7 @@
 import SwiftUI
 
 @available(iOS 14.0, *)
-public struct HorizontalItemSlider<Element: Identifiable, Content: View>: View {
+public struct HorizontalItemSlider<Element, Content: View>: View {
 
     @State private var selection: Int = 0
 
@@ -106,11 +106,11 @@ public struct HorizontalItemSlider_Previews: PreviewProvider {
             HorizontalItemSlider(
                 horizontalIndicesAlignment: HorizontalAlignment.trailing,
                 array: [
-                    ExampleContent(content: "Hallo"), ExampleContent(content: "Welt"), ExampleContent(content: "!")
+                    "Hallo", "Welt", "!"
                 ]
             ) { element in
                 
-                Text("\(element.content)")
+                Text("\(element)")
                     .frame(minWidth: 0, idealWidth: 100, maxWidth: .infinity, minHeight: 0, idealHeight: 100, maxHeight: .infinity, alignment: .center)
                     .background(Color.red)
                 
@@ -120,12 +120,4 @@ public struct HorizontalItemSlider_Previews: PreviewProvider {
 
     }
 
-}
-
-
-struct ExampleContent: Identifiable {
-    
-    public var id = UUID()
-    public var content: String
-    
 }
