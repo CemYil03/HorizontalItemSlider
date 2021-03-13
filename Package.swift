@@ -5,6 +5,9 @@ import PackageDescription
 
 let package = Package(
     name: "HorizontalItemSlider",
+    platforms: [
+        .iOS(SupportedPlatform.IOSVersion.v14)
+    ],
     products: [
         .library(
             name: "HorizontalItemSlider",
