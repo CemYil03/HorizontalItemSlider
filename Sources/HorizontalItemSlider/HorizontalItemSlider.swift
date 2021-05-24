@@ -1,141 +1,240 @@
 import SwiftUI
 
-@available(iOS 13.0, *)
-public struct HorizontalItemSlider<Element, Content: View>: View {
-
-    @State private var selection: Int = 0
-
-    public let showIndices: Bool
-
-    public let verticalIndicesAlignment: VerticalAlignment
-    public let horizontalIndicesAlignment: HorizontalAlignment
-
-    public var array: [Element]
-    public var content: (_ element: Element) -> Content
-
-    @GestureState private var translation: CGFloat = 0
+@available(iOS 14.0, *)
+struct TestView: View {
     
-    public init(
-        showIndices: Bool = true,
-        verticalIndicesAlignment: VerticalAlignment = VerticalAlignment.bottom,
-        horizontalIndicesAlignment: HorizontalAlignment = HorizontalAlignment.center,
-        array: [Element],
-        @ViewBuilder content: @escaping (_ element: Element) -> Content
-
-    ) {
-        self.showIndices = true
-        self.verticalIndicesAlignment = verticalIndicesAlignment
-        self.horizontalIndicesAlignment = horizontalIndicesAlignment
-        self.array = array
-        self.content = content
-    }
-
-    public var body: some View {
-
-        ZStack {
-            
-            GeometryReader { geometry in
+    @State private var items: [DemoItem] = [
+        DemoItem(title: "Title I", description: "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam"),
+        DemoItem(title: "Title II", description: "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam"),
+        DemoItem(title: "Title III", description: "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam")
+    ]
+    @State private var selectedItem: Int = 0
+    
+    var body: some View {
+        
+        ItemSlider(
+            items: self.$items,
+            selectedItem: self.$selectedItem,
+            indexDotsPosition: .BottomTrailing,
+            showIndexArrows: true,
+            content: { element in
+                Rectangle()
+                    .foregroundColor(Color.blue)
+                    .overlay(
+                        Text(element.title)
+                    )
+            },
+            detailContent: { element in
                 
-                HStack(spacing: 0) {
-                    ForEach(0..<self.array.count) { i in
-                        
-                        
-                        self.content(self.array[i])
-                            .frame(width: geometry.size.width)
-                        
-                        
-                    }
-                }
-                .frame(width: geometry.size.width, alignment: .leading)
-                .offset(x: -CGFloat(self.selection) * geometry.size.width)
-                .offset(x: self.translation)
-                .animation(.interactiveSpring())
-                .gesture(
-                    DragGesture().updating(self.$translation) { value, state, _ in
-                        state = value.translation.width
-                    }.onEnded { value in
-                        let offset = value.translation.width / geometry.size.width
-                        let newIndex = (CGFloat(self.selection) - offset).rounded()
-                        self.selection = min(max(Int(newIndex), 0), self.array.count - 1)
-                    }
-                )
-                
-            }
-            
-            if self.array.count > 1 && self.showIndices {
-
-                VStack {
-
-                    if self.verticalIndicesAlignment == VerticalAlignment.bottom {
-                        Spacer()
-                    }
-
+                VStack(alignment: .leading) {
+                    
                     HStack {
-
-                        if self.horizontalIndicesAlignment == HorizontalAlignment.trailing {
-                            Spacer()
-                        }
-
-                        HStack(spacing: 10) {
-                            ForEach(0..<self.array.count, id: \.self) { i in
-
-                                Circle()
-                                    .frame(width: 8, height: 8)
-                                    .foregroundColor((i == self.selection) ? Color.primary : Color.gray.opacity(0.3))
-
-                            }
-                        }
-                        .padding(.horizontal, 10)
-                        .padding(.vertical, 9)
-                        .background(Color(UIColor.secondarySystemBackground))
-                        .clipped()
-                        .cornerRadius(16)
-
-                        if self.horizontalIndicesAlignment == HorizontalAlignment.leading {
-                            Spacer()
-                        }
-
-                    }
-
-                    if self.verticalIndicesAlignment == VerticalAlignment.top {
+                        Text(element.title).bold()
                         Spacer()
                     }
-
-                }.padding(8)
-
+                    
+                    Text(element.description)
+                    
+                }.padding()
             }
-            
+        )
+        
+    }
+    
+}
+
+private struct DemoItem: Identifiable {
+    public let id: UUID = UUID()
+    let title: String
+    let description: String
+}
+
+
+
+@available(iOS 14.0, *)
+public struct HorizontalItemSlider_Previews: PreviewProvider {
+
+    public static var previews: some View {
+
+        NavigationView {
+            TestView()
+                .background(Color(#colorLiteral(red: 0.9494678378, green: 0.9481791854, blue: 0.9695548415, alpha: 1)))
+                .navigationBarTitleDisplayMode(.inline)
         }
+
+        NavigationView {
+            TestView()
+                .background(Color(#colorLiteral(red: 0.1100086048, green: 0.1094449237, blue: 0.1180388853, alpha: 1)))
+                .navigationBarTitleDisplayMode(.inline)
+        }.colorScheme(ColorScheme.dark)
+
+        NavigationView {
+            List {
+                TestView()
+            }.listStyle(GroupedListStyle())
+            .navigationBarTitleDisplayMode(.inline)
+        }
+        
+        NavigationView {
+            List {
+                TestView()
+            }.listStyle(GroupedListStyle())
+            .navigationBarTitleDisplayMode(.inline)
+        }.colorScheme(ColorScheme.dark)
 
     }
 
 }
 
+@available(iOS 14.0, *)
+public extension ItemSlider where DetailContent == EmptyView {
 
+    init(
+        items: Binding<[Element]>,
+        selectedItem: Binding<Int>,
+        indexDotsPosition: IndexDotsPosition = IndexDotsPosition.None,
+        showIndexArrows: Bool = false,
+        contentHeight: CGFloat = 256,
+        @ViewBuilder content: @escaping (_ element: Element) -> Content
+    ) {
+        self._items = items
+        self._selectedItem = selectedItem
+        self.indexDotsPosition = indexDotsPosition
+        self.showIndexArrows = showIndexArrows
+        self.contentHeight = contentHeight
+        self.content = content
+        self.detailContent = { _ in EmptyView() }
+    }
 
-@available(iOS 13.0, *)
-public struct HorizontalItemSlider_Previews: PreviewProvider {
+}
 
-    public static var previews: some View {
+@available(iOS 14.0, *)
+public struct ItemSlider<Element, Content: View, DetailContent: View>: View {
+    
+    public enum IndexDotsPosition {
+        case None, TopLeading, TopCenter, TopTrailing, BottomLeading, BottomCenter, BottomTrailing
+    }
 
-        VStack {
-
-            HorizontalItemSlider(
-                horizontalIndicesAlignment: HorizontalAlignment.trailing,
-                array: [
-                    "Hallo", "Welt", "!"
-                ]
-            ) { element in
-
-                Text("\(element)")
-                    .frame(minWidth: 0, idealWidth: 100, maxWidth: .infinity, minHeight: 0, idealHeight: 100, maxHeight: .infinity, alignment: .center)
-                    .background(Color.red)
-
-            }.frame(height: 256)
+    public init(
+        items: Binding<[Element]>,
+        selectedItem: Binding<Int>,
+        indexDotsPosition: IndexDotsPosition = IndexDotsPosition.None,
+        showIndexArrows: Bool = false,
+        contentHeight: CGFloat = 256,
+        @ViewBuilder content: @escaping (_ element: Element) -> Content,
+        @ViewBuilder detailContent: @escaping (_ element: Element) -> DetailContent
+    ) {
+        self._items = items
+        self._selectedItem = selectedItem
+        self.indexDotsPosition = indexDotsPosition
+        self.showIndexArrows = showIndexArrows
+        self.contentHeight = contentHeight
+        self.content = content
+        self.detailContent = detailContent
+    }
+    
+    @Binding private var selectedItem: Int
+    @Binding private var items: [Element]
+    
+    private let indexDotsPosition: IndexDotsPosition
+    private let showIndexArrows: Bool
+    private let contentHeight: CGFloat
+    
+    public var content: (_ element: Element) -> Content
+    public var detailContent: (_ element: Element) -> DetailContent
+    
+    public var body: some View {
+        
+        Section {
             
-            Spacer()
+            VStack {
+                
+                ZStack {
+                    
+                    TabView(selection: self.$selectedItem) {
+                        
+                        ForEach(0..<self.items.count) { i in
+                            self.content(self.items[i]).tag(i)
+                        }
+                        
+                    }.tabViewStyle(PageTabViewStyle(indexDisplayMode: PageTabViewStyle.IndexDisplayMode.never))
+                    .onAppear(perform: {
+                        UIScrollView.appearance().bounces = false
+                    })
+                    
+                    if self.showIndexArrows {
+                        
+                        HStack {
+                            Button(
+                                action: { self.selectedItem = self.selectedItem == 0 ? self.items.count - 1 : self.selectedItem - 1 },
+                                label: {
+                                    Image(systemName: "chevron.left")
+                                        .foregroundColor(Color.primary)
+                                        .padding()
+                                }
+                            ).buttonStyle(BorderlessButtonStyle())
+                            Spacer()
+                            Button(
+                                action: { self.selectedItem = self.selectedItem == self.items.count - 1 ? 0 : self.selectedItem + 1 },
+                                label: {
+                                    Image(systemName: "chevron.right")
+                                        .foregroundColor(Color.primary)
+                                        .padding()
+                                }
+                            ).buttonStyle(BorderlessButtonStyle())
+                        }
+                        
+                    }
+                    
+                    if self.items.count > 1 && self.indexDotsPosition != IndexDotsPosition.None {
+                        
+                        HStack {
+                            
+                            if self.indexDotsPosition == .TopTrailing || self.indexDotsPosition == .BottomTrailing {
+                                Spacer()
+                            }
+                            
+                            VStack {
+                                
+                                if self.indexDotsPosition == .BottomLeading || self.indexDotsPosition == .BottomCenter || self.indexDotsPosition == .BottomTrailing {
+                                    Spacer()
+                                }
+                                
+                                HStack(spacing: 10) {
+                                    ForEach(0..<self.items.count, id: \.self) { i in
 
-        }.colorScheme(.dark)
+                                        Circle()
+                                            .frame(width: 8, height: 8)
+                                            .foregroundColor((i == self.selectedItem) ? Color.primary : Color.gray.opacity(0.3))
+
+                                    }
+                                }
+                                .padding(.horizontal, 10)
+                                .padding(.vertical, 9)
+                                .background(Color(UIColor.secondarySystemBackground))
+                                .cornerRadius(16)
+                                
+                                if self.indexDotsPosition == .TopLeading || self.indexDotsPosition == .TopCenter || self.indexDotsPosition == .TopTrailing {
+                                    Spacer()
+                                }
+                                
+                            }
+                            
+                            if self.indexDotsPosition == .TopLeading || self.indexDotsPosition == .BottomLeading {
+                                Spacer()
+                            }
+                            
+                        }.padding(10)
+                        
+                    }
+                    
+                }.frame(height: self.contentHeight)
+                
+                self.detailContent(self.items[self.selectedItem])
+                
+            }
+            
+        }.listRowInsets(EdgeInsets())
 
     }
 
