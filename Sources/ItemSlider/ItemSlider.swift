@@ -56,24 +56,24 @@ public struct HorizontalItemSlider_Previews: PreviewProvider {
 
     public static var previews: some View {
 
-//        NavigationView {
-//            TestView()
-//                .background(Color(#colorLiteral(red: 0.9494678378, green: 0.9481791854, blue: 0.9695548415, alpha: 1)))
-//                .navigationBarTitleDisplayMode(.inline)
-//        }
-//
-//        NavigationView {
-//            TestView()
-//                .background(Color(#colorLiteral(red: 0.1100086048, green: 0.1094449237, blue: 0.1180388853, alpha: 1)))
-//                .navigationBarTitleDisplayMode(.inline)
-//        }.colorScheme(ColorScheme.dark)
-//
-//        NavigationView {
-//            List {
-//                TestView()
-//            }.listStyle(GroupedListStyle())
-//            .navigationBarTitleDisplayMode(.inline)
-//        }
+        NavigationView {
+            TestView()
+                .background(Color(#colorLiteral(red: 0.9494678378, green: 0.9481791854, blue: 0.9695548415, alpha: 1)))
+                .navigationBarTitleDisplayMode(.inline)
+        }
+
+        NavigationView {
+            TestView()
+                .background(Color(#colorLiteral(red: 0.1100086048, green: 0.1094449237, blue: 0.1180388853, alpha: 1)))
+                .navigationBarTitleDisplayMode(.inline)
+        }.colorScheme(ColorScheme.dark)
+
+        NavigationView {
+            List {
+                TestView()
+            }.listStyle(GroupedListStyle())
+            .navigationBarTitleDisplayMode(.inline)
+        }
         
         NavigationView {
             List {
